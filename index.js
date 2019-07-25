@@ -112,11 +112,9 @@ server.put("/api/users/:id", (req, res) => {
             if (updatedUser) {
               res.status(200).json(updatedUser);
             } else {
-              res
-                .status(404)
-                .json({
-                  message: "The user with the specified ID does not exist."
-                });
+              res.status(404).json({
+                message: "The user with the specified ID does not exist."
+              });
             }
           });
         } else {
@@ -140,3 +138,5 @@ server.put("/api/users/:id", (req, res) => {
 server.listen(4000, () => {
   console.log("server listening on port 4000");
 });
+
+//mvp complete
