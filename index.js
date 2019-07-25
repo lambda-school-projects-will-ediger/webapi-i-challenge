@@ -100,6 +100,43 @@ server.delete("/api/users/:id", (req, res) => {
   });
 });
 
+server.put("/api/users/:id", (req, res) => {
+  const { id } = req.params;
+  const userInfo = req.body;
+  const { name, bio } = userInfo;
+  if (name && bio) {
+    db.update(id, userInfo)
+      .then(updated => {
+        if (updated) {
+          db.findById(id).then(updatedUser => {
+            if (updatedUser) {
+              res.status(200).json(updatedUser);
+            } else {
+              res
+                .status(404)
+                .json({
+                  message: "The user with the specified ID does not exist."
+                });
+            }
+          });
+        } else {
+          res.status(404).json({
+            message: "The user with the specified ID does not exist."
+          });
+        }
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({ error: "The user information could not be modified." });
+      });
+  } else {
+    res
+      .status(400)
+      .json({ errorMessage: "Please provide name and bio for the user." });
+  }
+});
+
 server.listen(4000, () => {
   console.log("server listening on port 4000");
 });
