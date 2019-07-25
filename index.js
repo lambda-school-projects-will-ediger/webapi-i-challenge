@@ -51,14 +51,22 @@ server.post("/api/users", (req, res) => {
   if (name && bio) {
     db.insert(userInfo)
       .then(user => {
-        res.status(201).json(user);
+        //response only includes the new id. we want the server to return the entire new user, which includes name, bio as well as timestamps for update/create
+        //so we call a findById on the database using the new id we received.
+        db.findById(user.id).then(user => {
+          if (user) {
+            res.status(201).json(user);
+          } else {
+            res.status(500).json({
+              error: "There was an error while saving the user to the database"
+            });
+          }
+        });
       })
       .catch(err => {
-        res
-          .status(500)
-          .json({
-            error: "There was an error while saving the user to the database"
-          });
+        res.status(500).json({
+          error: "There was an error while saving the user to the database"
+        });
       });
   } else {
     res
